@@ -65,7 +65,7 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
-   "rev": "f0f9f8df3eec3ee7441942f02f1776cec1d2d3e1",
+   "rev": "6c327e38d570fc3285f6cb3f08592528736f9643",
    "name": "batteries",
    "manifestFile": "lake-manifest.json",
    "inputRev": "2026/10/LintGlobalFingerprint",
